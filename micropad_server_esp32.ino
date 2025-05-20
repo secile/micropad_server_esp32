@@ -14,29 +14,44 @@
 BLECharacteristic *pTxCharacteristic;
 bool deviceConnected = false;
 
+// callback for BLE Server connect/disconnect.
 class MyServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer *pServer) {
     deviceConnected = true;
+    Serial.println("onConnect");
   };
 
   void onDisconnect(BLEServer *pServer) {
     deviceConnected = false;
+    pServer->startAdvertising();
+    Serial.println("onDisconnect. start advertising.");
   }
 };
 
+// callback to inform of events.
 class MyCallbacks : public BLECharacteristicCallbacks {
+public:
+  MyCallbacks(void (*onReceived)(String, String, String)) {
+    this->onReceived = onReceived;
+  }
+
+private:
+  void (*onReceived)(String, String, String);
+
+  // called when ESP32 receive data from micro:pad.
   void onWrite(BLECharacteristic *pCharacteristic) {
     String rxValue = pCharacteristic->getValue();
+    //Serial.print(rxValue); // for debug.
 
-    if (rxValue.length() > 0) {
-      Serial.println("*********");
-      Serial.print("Received Value: ");
-      for (int i = 0; i < rxValue.length(); i++) {
-        Serial.print(rxValue[i]);
-      }
-
-      Serial.println();
-      Serial.println("*********");
+    // parse csv.
+    int comma1_idx = rxValue.indexOf(',', 0);
+    int comma2_idx = rxValue.indexOf(',', comma1_idx + 1);
+    if (comma1_idx != -1 && comma2_idx != -1) {
+      // csv with 3 params 'ControlID, Value1, Value2'.
+      String id = rxValue.substring(0, comma1_idx);
+      String value1 = rxValue.substring(comma1_idx + 1, comma2_idx);
+      String value2 = rxValue.substring(comma2_idx + 1);
+      this->onReceived(id, value1, value2);
     }
   }
 };
@@ -84,7 +99,7 @@ void initBLE() {
   
   // RX (0003) ESP32(server) <- micropad(client)
   BLECharacteristic *pRxCharacteristic = pService->createCharacteristic(CHARACTERISTIC_UUID_RX, BLECharacteristic::PROPERTY_WRITE);
-  pRxCharacteristic->setCallbacks(new MyCallbacks());
+  pRxCharacteristic->setCallbacks(new MyCallbacks(receiveFromMicropad));
 
   // Start the service
   pService->start();
@@ -97,4 +112,20 @@ void initBLE() {
 
 void loop() {
   delay(500);
+}
+
+// send cmd to micro:pad.
+void sendToMicropad(String id, String cmd) {
+  if (!deviceConnected) return;
+  pTxCharacteristic->setValue(id + ":" + cmd);
+  pTxCharacteristic->notify();
+}
+
+// receive cmd from micro:pad.
+void receiveFromMicropad(String controlId, String value1, String value2) {
+  // branch by controlID and do your task.
+  if (controlId == "s1") {
+    int value = value1.toFloat() * 255;
+    Serial.println(value);
+  }
 }
