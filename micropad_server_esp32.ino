@@ -114,7 +114,9 @@ void initBLE() {
 }
 
 void loop() {
-  delay(500);
+  static int loopCount = 0;
+  sendToMicropad("l1", String(loopCount++));
+  delay(1000);
 }
 
 // send cmd to micro:pad.
