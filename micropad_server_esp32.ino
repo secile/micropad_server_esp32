@@ -23,7 +23,7 @@ class MyServerCallbacks : public BLEServerCallbacks {
     pServer->updateConnParams(param->connect.remote_bda, 6, 6, 0, 100);
     deviceConnected = true;
     Serial.println("onConnect");
-};
+  };
 
   void onDisconnect(BLEServer *pServer) {
     deviceConnected = false;
@@ -45,16 +45,15 @@ private:
   // called when ESP32 receive data from micro:pad.
   void onWrite(BLECharacteristic *pCharacteristic) {
     String rxValue = pCharacteristic->getValue();
-    //Serial.print(rxValue); // for debug.
 
     // parse csv.
     int comma1_idx = rxValue.indexOf(',', 0);
     int comma2_idx = rxValue.indexOf(',', comma1_idx + 1);
     if (comma1_idx != -1 && comma2_idx != -1) {
-      // csv with 3 params 'ControlID, Value1, Value2'.
+      // csv with 3 params 'ControlID, Value1, Value2\n'.
       String id = rxValue.substring(0, comma1_idx);
       String value1 = rxValue.substring(comma1_idx + 1, comma2_idx);
-      String value2 = rxValue.substring(comma2_idx + 1);
+      String value2 = rxValue.substring(comma2_idx + 1, rxValue.length()-1); // trim last \n.
       this->onReceived(id, value1, value2);
     }
   }
@@ -127,9 +126,13 @@ void sendToMicropad(String id, String cmd) {
 
 // receive cmd from micro:pad.
 void receiveFromMicropad(String controlId, String value1, String value2) {
+  // debug. delete if you do not need.
+  Serial.println("id:" + controlId + ", value1:" + value1 + ", value2:" + value2);
+  
   // branch by controlID and do your task.
-  if (controlId == "s1") {
-    int value = value1.toFloat() * 255;
-    Serial.println(value);
+  if (controlId == "s1") { // slider
+    // for example, pwm LED.
+    // int value = value1.toFloat() * 255;
+    // ledcWrite(LED_PIN, value);
   }
 }
