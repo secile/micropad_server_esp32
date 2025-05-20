@@ -16,10 +16,14 @@ bool deviceConnected = false;
 
 // callback for BLE Server connect/disconnect.
 class MyServerCallbacks : public BLEServerCallbacks {
-  void onConnect(BLEServer *pServer) {
+  // void onConnect(BLEServer *pServer) { };
+
+  void onConnect(BLEServer* pServer, esp_ble_gatts_cb_param_t* param) {
+    // set the connection interval to the minimum of 7.5ms (6 * 1.25ms)
+    pServer->updateConnParams(param->connect.remote_bda, 6, 6, 0, 100);
     deviceConnected = true;
     Serial.println("onConnect");
-  };
+};
 
   void onDisconnect(BLEServer *pServer) {
     deviceConnected = false;
