@@ -1,14 +1,13 @@
-This is a ESP32 Arduino project support for [micropad](https://github.com/secile/micropad).  
+This is a ESP32 Arduino project that supports [micropad](https://github.com/secile/micropad).  
 You can remotely control your ESP32 from smartphone via BLE (Bluetooth Low Energy).
 
 # How to use.
-clone this repository, or download zip, open by Arduino IDE,
-and upload to your ESP32.  
-Access [micropad](https://secile.github.io/micropad/) page, and press '🚩' button to connect your ESP32.
+clone this repository, or download zip, open by Arduino IDE, and upload to your ESP32.  
+Access [micropad](https://secile.github.io/micropad/) page, and press '🚩' button to connect your ESP32.  
 You can see your ESP32 device in pairing dialog as name 'BBC micro:bit ESP32'.
 
 # Receive Massage from micropad.
-When you control micropad UI (Button, Analog Stick, and Slider), micropad send message to your ESP32, and 'receiveFromMicropad' method was called.
+When you operate micropad controls (Button, Analog Stick, and Slider), micropad send message to your ESP32, and 'receiveFromMicropad' method was called.
 You have to modify 'receiveFromMicropad' method to handle your task.
 Control ID is ID that every control have it's own. (e.g. Slider is 's1', Analog Stick is 'a1' or 'a2').
 Branch by control ID and do your task.
