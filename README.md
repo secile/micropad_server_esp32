@@ -23,7 +23,7 @@ You have to modify 'receiveFromMicropad' function to handle your task.
 - 2nd argument value1 and 3rd argument value2 is depend on control ID.
   - when control ID is 'a1' or 'a2' means 'Analog Stick', value1 is radian angle clockwise from the X axis, and value2 is power.
   - when control ID is 'b1' or 'b2' means 'Button', value1 is 1(on) or 0(off). value2 always 0.
-  - when control ID is 's1' means 'Slider', value1 is ratio with 0.0-1.0. (0.1 step).
+  - when control ID is 's1' means 'Slider', value1 is ratio with 0.0-1.0. (0.1 step). value2 always 0.
 - Branch by control ID and do your task.
 
 ```c
