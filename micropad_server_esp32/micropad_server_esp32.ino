@@ -119,14 +119,14 @@ void loop() {
   delay(1000);
 }
 
-// send cmd to micro:pad.
+// call when send message to micro:pad.
 void sendToMicropad(String id, String cmd) {
   if (!deviceConnected) return;
   pTxCharacteristic->setValue(id + ":" + cmd);
   pTxCharacteristic->notify();
 }
 
-// receive cmd from micro:pad.
+// called when receive message from micro:pad.
 void receiveFromMicropad(String controlId, String value1, String value2) {
   // debug. delete if you do not need.
   Serial.println("id:" + controlId + ", value1:" + value1 + ", value2:" + value2);
