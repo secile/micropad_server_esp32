@@ -14,6 +14,7 @@ The app is built with HTML and JavaScript that can be run in the web browser of 
 - upload program to your ESP32.
 - access [micropad](https://secile.github.io/micropad/) page, and press '🚩' button to connect your ESP32.
   - You can see your ESP32 device in pairing dialog as name 'BBC micro:bit ESP32'.
+  - ![image](https://github.com/user-attachments/assets/ad37c51d-d858-47a1-b22e-c7ea7f2363e7)
 
 # Receive Message from micropad.
 When you operate micropad controls (Button, Analog Stick, and Slider), micropad send message to your ESP32, and 'receiveFromMicropad' function was called.
@@ -27,6 +28,7 @@ You have to modify 'receiveFromMicropad' function to handle your task.
 - Branch by control ID and do your task.
 
 ```c
+// called when receive message from micropad.
 void receiveFromMicropad(String controlId, String value1, String value2) {
   // debug. delete if you do not need.
   Serial.println("id:" + controlId + ", value1:" + value1 + ", value2:" + value2);
